@@ -169,8 +169,9 @@ subroutine PrecompSH()
     ! For the solution of the linear system (implicit)
     if ((solver == "convective_implicit") .or. (solver == "newton_convective_implicit") & 
         & .or. (solver == "continuation_convective_implicit")) then
-        allocate(A(2 * LL * (KK2 + KK4), 0:MM), Ap(2 * LL * (KK2 + KK4), 0:MM), A1(2 * LL * (KK2 + KK4), 1))
-        allocate(DA(2 * LL * (KK2 + KK4), 0:MM), DA1(2 * LL * (KK2 + KK4), 1))
+        size_A = 2 * (KK2 + KK4) * sum([(LL - (max(1, m) - 1), m=0, MM*mres, mres)])
+        allocate(A(size_A, 1), Ap(size_A, 1), DA(size_A, 1))
+        allocate(A1(2 * LL * (KK2 + KK4), 1), DA1(2 * LL * (KK2 + KK4), 1))
     end if
 
     ! To store states if continuation method selected

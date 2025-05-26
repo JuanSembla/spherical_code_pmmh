@@ -130,7 +130,8 @@ module mod_Globalvars
   double precision, dimension(:, :, :), allocatable :: Xef, Yef ! Coupled Yef is only used if timestep is CN or PC
   double precision, dimension(:, :, :), allocatable :: Ye_mat, Yf_mat ! These are de-coupled and are only used if timestep is BDF
   integer, dimension(:, :), allocatable :: PIVOT
-  double precision, dimension(:, :), allocatable :: A, Ap, A1, DA, DA1
+  double precision, dimension(:, :), allocatable :: A, Ap, DA, A1, DA1
+  integer :: size_A
 
   !--- Newton solver and GMRES
   double complex, dimension(:, :), allocatable, target :: E_base, F_base, T_base ! Spectral arrays to contain base values of U in Newton solver

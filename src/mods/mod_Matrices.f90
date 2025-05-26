@@ -208,10 +208,10 @@ subroutine small2big(E, F, A)
     
   implicit none
 
-  double complex, dimension(KK2, shtns%nlm), intent(in)                       :: E
-  double complex, dimension(KK4, shtns%nlm), intent(in)                       :: F
-  double precision, dimension(2 * LL * (KK2 + KK4), 0 : MM), intent(out) :: A
-  integer :: step
+  double complex, dimension(KK2, shtns%nlm), intent(in) :: E
+  double complex, dimension(KK4, shtns%nlm), intent(in) :: F
+  double precision, dimension(size_A, 1), intent(out) :: A
+  integer :: step, stride
   integer :: mid
   integer :: m, i, m_idx
   integer :: t_odd, t_even, l_odd, l_even, n_even, n_odd
@@ -220,6 +220,7 @@ subroutine small2big(E, F, A)
   t_even = 0
   m_idx = 0
   step = 2 * (KK2 + KK4)
+  stride = 0
   A = 0.0d0
 
   do m = 0, MM*mres, mres
@@ -228,36 +229,36 @@ subroutine small2big(E, F, A)
     i = 1 - mod(max(m, 1), 2)
     mid = 2 * (KK2 * n_odd + KK4 * n_even)
     do l_odd = 1, n_odd
-        A(2 * KK4 * i + (l_odd - 1) * step + 1 : &
-          & 2 * KK4 * i + (l_odd-1) * step + KK2, m_idx) = &
+        A(stride + 2 * KK4 * i + (l_odd - 1) * step + 1 : &
+          & stride + 2 * KK4 * i + (l_odd-1) * step + KK2, 1) = &
           & real(E(:, idx_odd(t_odd + l_odd)))
-        A(2 * KK4 * i + (l_odd - 1) * step + KK2 + 1 : & 
-          & 2 * KK4 * i + (l_odd - 1) * step + 2 * KK2, m_idx) = &
+        A(stride + 2 * KK4 * i + (l_odd - 1) * step + KK2 + 1 : & 
+          & stride + 2 * KK4 * i + (l_odd - 1) * step + 2 * KK2, 1) = &
           & aimag(E(:, idx_odd(t_odd + l_odd)))
-        A(2 * KK2 * i + mid + (l_odd - 1) * step + 1 : & 
-          & 2 * KK2 * i + mid + (l_odd - 1) * step + KK4, m_idx) = &
+        A(stride + 2 * KK2 * i + mid + (l_odd - 1) * step + 1 : & 
+          & stride + 2 * KK2 * i + mid + (l_odd - 1) * step + KK4, 1) = &
           & real(F(:, idx_odd(t_odd + l_odd)))
-        A(2 * KK2 * i + mid + (l_odd - 1) * step + KK4 + 1 : & 
-          & 2 * KK2 * i + mid + (l_odd - 1) * step + 2 * KK4, m_idx) = &
+        A(stride + 2 * KK2 * i + mid + (l_odd - 1) * step + KK4 + 1 : & 
+          & stride + 2 * KK2 * i + mid + (l_odd - 1) * step + 2 * KK4, 1) = &
           & aimag(F(:, idx_odd(t_odd + l_odd)))
     end do
     do l_even = 1, n_even
-        A(2 * KK2 * (1 - i) + (l_even - 1) * step + 1 : & 
-          & 2 * KK2 * (1 - i) + (l_even - 1) * step + KK4, m_idx) = &
+        A(stride + 2 * KK2 * (1 - i) + (l_even - 1) * step + 1 : & 
+          & stride + 2 * KK2 * (1 - i) + (l_even - 1) * step + KK4, 1) = &
           & real(F(:, idx_even(t_even + l_even)))
-        A(2 * KK2 * (1 - i) + (l_even - 1) * step + KK4 + 1 : &
-          & 2 * KK2 * (1 - i) + (l_even - 1) * step + 2 * KK4, m_idx) = &
+        A(stride + 2 * KK2 * (1 - i) + (l_even - 1) * step + KK4 + 1 : &
+          & stride + 2 * KK2 * (1 - i) + (l_even - 1) * step + 2 * KK4, 1) = &
           & aimag(F(:, idx_even(t_even + l_even)))
-        A(mid + 2 * KK4 * (1 - i) + (l_even - 1) * step + 1 : &
-          & mid + 2 * KK4 * (1 - i) + (l_even - 1) * step + KK2, m_idx) = &
+        A(stride + mid + 2 * KK4 * (1 - i) + (l_even - 1) * step + 1 : &
+          & stride + mid + 2 * KK4 * (1 - i) + (l_even - 1) * step + KK2, 1) = &
           & real(E(:, idx_even(t_even + l_even)))
-        A(mid + 2 * KK4 * (1 - i) + (l_even - 1) * step + KK2 + 1 : &
-          & mid + 2 * KK4 * (1 - i) + (l_even - 1) * step + 2 * KK2, m_idx) = &
+        A(stride + mid + 2 * KK4 * (1 - i) + (l_even - 1) * step + KK2 + 1 : &
+          & stride + mid + 2 * KK4 * (1 - i) + (l_even - 1) * step + 2 * KK2, 1) = &
           & aimag(E(:, idx_even(t_even + l_even)))
     end do
     t_even = t_even + n_even
     t_odd = t_odd + n_odd
-    m_idx = m_idx + 1
+    stride = stride + 2 * (KK2 + KK4) * (LL - (max(m, 1) - 1))
   end do
 
 end subroutine small2big
@@ -266,10 +267,10 @@ subroutine big2small(A, E, F)
   
   implicit none
   
-  double precision, dimension(2 * LL * (KK2 + KK4), 0 : MM), intent(in) :: A
-  double complex, dimension(KK2, shtns%nlm), intent(out)                     :: E
-  double complex, dimension(KK4, shtns%nlm), intent(out)                     :: F
-  integer :: step
+  double precision, dimension(size_A, 1), intent(in) :: A
+  double complex, dimension(KK2, shtns%nlm), intent(out) :: E
+  double complex, dimension(KK4, shtns%nlm), intent(out) :: F
+  integer :: step, stride
   integer :: mid
   integer :: m, i, m_idx
   integer :: t_odd, t_even, l_odd, l_even, n_even, n_odd
@@ -278,6 +279,7 @@ subroutine big2small(A, E, F)
   t_even = 0
   m_idx = 0
   step = 2 * (KK2 + KK4)
+  stride = 0
   E = 0.0d0
   F = 0.0d0
 
@@ -288,35 +290,35 @@ subroutine big2small(A, E, F)
     mid = 2 * (KK2 * n_odd + KK4 * n_even)
     do l_odd = 1, n_odd
         E(:, idx_odd(t_odd + l_odd))%re = &
-          & A(2 * KK4 * i + (l_odd - 1) * step + 1 : &
-          & 2 * KK4 * i + (l_odd-1)*step + KK2, m_idx)
+          & A(stride + 2 * KK4 * i + (l_odd - 1) * step + 1 : &
+          & stride + 2 * KK4 * i + (l_odd-1)*step + KK2, 1)
         E(:, idx_odd(t_odd + l_odd))%im = & 
-          & A(2 * KK4 * i + (l_odd - 1) * step + KK2 + 1 : & 
-          & 2 * KK4 * i + (l_odd - 1) * step + 2 * KK2, m_idx)
+          & A(stride + 2 * KK4 * i + (l_odd - 1) * step + KK2 + 1 : & 
+          & stride + 2 * KK4 * i + (l_odd - 1) * step + 2 * KK2, 1)
         F(:, idx_odd(t_odd + l_odd))%re = & 
-          & A(2 * KK2 * i + mid + (l_odd - 1) * step + 1 : & 
-          & 2 * KK2 * i + mid + (l_odd - 1) * step + KK4, m_idx)
+          & A(stride + 2 * KK2 * i + mid + (l_odd - 1) * step + 1 : & 
+          & stride + 2 * KK2 * i + mid + (l_odd - 1) * step + KK4, 1)
         F(:, idx_odd(t_odd + l_odd))%im = & 
-          & A(2 * KK2 * i + mid + (l_odd - 1) * step + KK4 + 1 : & 
-          & 2 * KK2 * i + mid + (l_odd - 1) * step + 2 * KK4, m_idx)
+          & A(stride + 2 * KK2 * i + mid + (l_odd - 1) * step + KK4 + 1 : & 
+          & stride + 2 * KK2 * i + mid + (l_odd - 1) * step + 2 * KK4, 1)
     end do
     do l_even = 1, n_even
         F(:, idx_even(t_even + l_even))%re = & 
-          & A(2 * KK2 * (1 - i) + (l_even - 1) * step + 1 : & 
-          & 2 * KK2 * (1 - i) + (l_even - 1) * step + KK4, m_idx)
+          & A(stride + 2 * KK2 * (1 - i) + (l_even - 1) * step + 1 : & 
+          & stride + 2 * KK2 * (1 - i) + (l_even - 1) * step + KK4, 1)
         F(:, idx_even(t_even + l_even))%im = & 
-          & A(2 * KK2 * (1 - i) + (l_even - 1) * step + KK4 + 1 : &
-          & 2 * KK2 * (1 - i) + (l_even - 1) * step + 2 * KK4, m_idx)
+          & A(stride + 2 * KK2 * (1 - i) + (l_even - 1) * step + KK4 + 1 : &
+          & stride + 2 * KK2 * (1 - i) + (l_even - 1) * step + 2 * KK4, 1)
         E(:, idx_even(t_even + l_even))%re = & 
-          & A(mid + 2 * KK4 * (1 - i) + (l_even - 1) * step + 1 : &
-          & mid + 2 * KK4 * (1 - i) + (l_even - 1) * step + KK2, m_idx)
+          & A(stride + mid + 2 * KK4 * (1 - i) + (l_even - 1) * step + 1 : &
+          & stride + mid + 2 * KK4 * (1 - i) + (l_even - 1) * step + KK2, 1)
         E(:, idx_even(t_even + l_even))%im = & 
-          & A(mid + 2 * KK4 * (1 - i) + (l_even - 1) * step + KK2 + 1 : &
-          & mid + 2 * KK4 * (1 - i) + (l_even - 1) * step + 2 * KK2, m_idx)
+          & A(stride + mid + 2 * KK4 * (1 - i) + (l_even - 1) * step + KK2 + 1 : &
+          & stride + mid + 2 * KK4 * (1 - i) + (l_even - 1) * step + 2 * KK2, 1)
     end do
     t_even = t_even + n_even
     t_odd = t_odd + n_odd
-    m_idx = m_idx + 1
+    stride = stride + 2 * (KK2 + KK4) * (LL - (max(m, 1) - 1))
   end do
 
 end subroutine big2small  
