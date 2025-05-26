@@ -134,7 +134,7 @@ subroutine compute_time_step_convective_implicit_PC()
 
   implicit none
 
-  integer :: lm, k, m, n_even, n_odd, top, m_idx, stride
+  integer :: lm, k, m, n_even, n_odd, top, stride
 
   !--- Compute Explicit terms for the predictor Step
   call comp_ImplicitRHS(DE, DF, DT)
@@ -164,7 +164,6 @@ subroutine compute_time_step_convective_implicit_PC()
   !--- Predictor Step for E, F and T
 
   !--- For E and F
-  m_idx = 0
   stride = 1
   Ap = 0.
 
@@ -175,11 +174,10 @@ subroutine compute_time_step_convective_implicit_PC()
     n_odd = ((LL + mod(LL, 2)) + 1 - m) / 2
     top = 2 * (KK2 + KK4) * (n_even + n_odd)
 
-    DA1 = Banded_Mult(top, 2*(KK2 + KK4) - 1, Yef(:, :top, m_idx), 4*(KK2 + KK4) - 1, A(stride, 1), DA(stride, 1))
-    A1 = Banded_LU_solve(top, 2 * (KK2 + KK4) - 1, Xef(:, :top, m_idx), 6 * (KK2 + KK4) - 2, DA1, PIVOT(:top, m_idx))
+    DA1 = Banded_Mult(top, 2*(KK2 + KK4) - 1, Yef(:, stride), 4*(KK2 + KK4) - 1, A(stride, 1), DA(stride, 1))
+    A1 = Banded_LU_solve(top, 2 * (KK2 + KK4) - 1, Xef(:, stride), 6 * (KK2 + KK4) - 2, DA1, PIVOT(stride))
     Ap(stride : stride + top - 1, 1) = A1(:top, 1)
     stride = stride + 2 * (KK2 + KK4) * (LL - (max(m, 1) - 1))
-    m_idx = m_idx + 1
   end do
 
   !--- For T
@@ -226,7 +224,6 @@ subroutine compute_time_step_convective_implicit_PC()
   !--- Corrector Step for E, F and T
 
   !--- For E and F
-  m_idx = 0
   stride = 1
 
   do m = 0, MM*mres, mres
@@ -236,11 +233,10 @@ subroutine compute_time_step_convective_implicit_PC()
     n_odd = ((LL + mod(LL, 2)) + 1 - m) / 2
     top = 2 * (KK2 + KK4) * (n_even + n_odd)
 
-    DA1 = Banded_Mult(top, 2*(KK2 + KK4) - 1, Yef(:, :top, m_idx), 4*(KK2 + KK4) -1, A(stride, 1), DA(stride, 1))
-    A1 = Banded_LU_solve(top, 2 * (KK2 + KK4) - 1, Xef(:, :top, m_idx), 6 * (KK2 + KK4) - 2, DA1, PIVOT(:top, m_idx))
+    DA1 = Banded_Mult(top, 2*(KK2 + KK4) - 1, Yef(:, stride), 4*(KK2 + KK4) -1, A(stride, 1), DA(stride, 1))
+    A1 = Banded_LU_solve(top, 2 * (KK2 + KK4) - 1, Xef(:, stride), 6 * (KK2 + KK4) - 2, DA1, PIVOT(stride))
     A(stride : stride + top - 1, 1) = A1(:top, 1)
     stride = stride + 2 * (KK2 + KK4) * (LL - (max(m, 1) - 1))
-    m_idx = m_idx + 1
   end do
 
   !--- For T
@@ -380,7 +376,7 @@ subroutine compute_time_step_convective_implicit_CN()
 
   implicit none
 
-  integer :: lm, k, m, n_even, n_odd, top, m_idx, stride
+  integer :: lm, k, m, n_even, n_odd, top, stride
 
   !--- Compute Explicit terms
   call Implicit_RHS_ptr(DE, DF, DT)
@@ -410,7 +406,6 @@ subroutine compute_time_step_convective_implicit_CN()
   !--- Solution of the linear system
 
   !--- For E and F
-  m_idx = 0
   stride = 1
   Ap = 0.
 
@@ -421,11 +416,10 @@ subroutine compute_time_step_convective_implicit_CN()
     n_odd = ((LL + mod(LL, 2)) + 1 - m) / 2
     top = 2 * (KK2 + KK4) * (n_even + n_odd)
 
-    DA1 = Banded_Mult(top, 2*(KK2 + KK4) - 1, Yef(:, :top, m_idx), 4*(KK2 + KK4) - 1, A(stride, 1), DA(stride, 1))
-    A1 = Banded_LU_solve(top, 2 * (KK2 + KK4) - 1, Xef(:, :top, m_idx), 6 * (KK2 + KK4) - 2, DA1, PIVOT(:top, m_idx))
+    DA1 = Banded_Mult(top, 2*(KK2 + KK4) - 1, Yef(:, stride), 4*(KK2 + KK4) - 1, A(stride, 1), DA(stride, 1))
+    A1 = Banded_LU_solve(top, 2 * (KK2 + KK4) - 1, Xef(:, stride), 6 * (KK2 + KK4) - 2, DA1, PIVOT(stride))
     Ap(stride : stride + top - 1, 1) = A1(:top, 1)
     stride = stride + 2 * (KK2 + KK4) * (LL - (max(m, 1) - 1))
-    m_idx = m_idx + 1
   end do
 
   !--- For T
@@ -450,7 +444,7 @@ subroutine compute_time_step_convective_implicit_FBE()
 
   implicit none
 
-  integer :: lm, k, m, n_even, n_odd, top, m_idx, stride
+  integer :: lm, k, m, n_even, n_odd, top, stride
 
   !--- Compute Explicit terms
   call Implicit_RHS_ptr(DE, DF, DT)
@@ -479,7 +473,6 @@ subroutine compute_time_step_convective_implicit_FBE()
   !--- Solution of the linear system
 
   !--- For E and F
-  m_idx = 0
   stride = 1
   Ap = 0.
 
@@ -490,10 +483,9 @@ subroutine compute_time_step_convective_implicit_FBE()
     n_odd = ((LL + mod(LL, 2)) + 1 - m) / 2
     top = 2 * (KK2 + KK4) * (n_even + n_odd)
 
-    A1 = Banded_LU_solve(top, 2 * (KK2 + KK4) - 1, Xef(:, :top, m_idx), 6 * (KK2 + KK4) - 2, DA(stride, 1), PIVOT(:top, m_idx))
+    A1 = Banded_LU_solve(top, 2 * (KK2 + KK4) - 1, Xef(:, stride), 6 * (KK2 + KK4) - 2, DA(stride, 1), PIVOT(stride))
     Ap(stride : stride + top - 1, 1) = A1(:top, 1)
     stride = stride + 2 * (KK2 + KK4) * (LL - (max(m, 1) - 1))
-    m_idx = m_idx + 1
   end do
 
   !--- For T
@@ -518,7 +510,7 @@ subroutine compute_time_step_convective_implicit_BDF2()
 
   implicit none
 
-  integer :: lm, k, m, n_even, n_odd, top, m_idx, stride
+  integer :: lm, k, m, n_even, n_odd, top, stride
 
   !--- Compute Explicit terms
   call comp_ImplicitRHS(DE, DF, DT)
@@ -564,7 +556,6 @@ subroutine compute_time_step_convective_implicit_BDF2()
   !--- Solution of the linear system
 
   !--- For E and F
-  m_idx = 0
   stride = 1
   Ap = 0.
 
@@ -575,10 +566,9 @@ subroutine compute_time_step_convective_implicit_BDF2()
     n_odd = ((LL + mod(LL, 2)) + 1 - m) / 2
     top = 2 * (KK2 + KK4) * (n_even + n_odd)
 
-    A1 = Banded_LU_solve(top, 2 * (KK2 + KK4) - 1, Xef(:, :top, m_idx), 6 * (KK2 + KK4) - 2, DA(stride, 1), PIVOT(:top, m_idx))
+    A1 = Banded_LU_solve(top, 2 * (KK2 + KK4) - 1, Xef(:, stride), 6 * (KK2 + KK4) - 2, DA(stride, 1), PIVOT(stride))
     Ap(stride : stride + top - 1, 1) = A1(:top, 1)
     stride = stride + 2 * (KK2 + KK4) * (LL - (max(m, 1) - 1))
-    m_idx = m_idx + 1
   end do
 
   !--- For T
@@ -661,7 +651,7 @@ subroutine compute_lin_time_step_convective_implicit_CN(E_per, F_per, T_per)
   double complex, dimension(KK4, shtns%nlm), intent(inout) :: F_per
   double complex, dimension(KK2, shtns%nlm), intent(inout) :: T_per
 
-  integer :: lm, k, m, n_even, n_odd, top, m_idx, stride
+  integer :: lm, k, m, n_even, n_odd, top, stride
 
   !--- Compute Explicit terms
   call comp_LinNonLin(E_base, F_base, T_base, E_per, F_per, T_per, DE, DF, DT)
@@ -691,7 +681,6 @@ subroutine compute_lin_time_step_convective_implicit_CN(E_per, F_per, T_per)
   !--- Solution of the linear system
 
   !--- For E and F
-  m_idx = 0
   stride = 1
   Ap = 0.
 
@@ -702,11 +691,10 @@ subroutine compute_lin_time_step_convective_implicit_CN(E_per, F_per, T_per)
     n_odd = ((LL + mod(LL, 2)) + 1 - m) / 2
     top = 2 * (KK2 + KK4) * (n_even + n_odd)
 
-    DA1 = Banded_Mult(top, 2*(KK2 + KK4) - 1, Yef(:, :top, m_idx), 4*(KK2 + KK4) - 1, A(stride, 1), DA(stride, 1))
-    A1 = Banded_LU_solve(top, 2 * (KK2 + KK4) - 1, Xef(:, :top, m_idx), 6 * (KK2 + KK4) - 2, DA1, PIVOT(:top, m_idx))
+    DA1 = Banded_Mult(top, 2*(KK2 + KK4) - 1, Yef(:, stride), 4*(KK2 + KK4) - 1, A(stride, 1), DA(stride, 1))
+    A1 = Banded_LU_solve(top, 2 * (KK2 + KK4) - 1, Xef(:, stride), 6 * (KK2 + KK4) - 2, DA1, PIVOT(stride))
     Ap(stride : stride + top - 1, 1) = A1(:top, 1)
     stride = stride + 2 * (KK2 + KK4) * (LL - (max(m, 1) - 1))
-    m_idx = m_idx + 1
   end do
 
   !--- For T
@@ -735,7 +723,7 @@ subroutine compute_lin_time_step_convective_implicit_FBE(E_per, F_per, T_per)
   double complex, dimension(KK4, shtns%nlm), intent(inout) :: F_per
   double complex, dimension(KK2, shtns%nlm), intent(inout) :: T_per
 
-  integer :: lm, k, m, n_even, n_odd, top, m_idx, stride
+  integer :: lm, k, m, n_even, n_odd, top, stride
 
   !--- Compute Explicit terms
   call comp_LinNonLin(E_base, F_base, T_base, E_per, F_per, T_per, DE, DF, DT)
@@ -764,7 +752,6 @@ subroutine compute_lin_time_step_convective_implicit_FBE(E_per, F_per, T_per)
   !--- Solution of the linear system
 
   !--- For E and F
-  m_idx = 0
   stride = 1
   Ap = 0.
 
@@ -775,10 +762,9 @@ subroutine compute_lin_time_step_convective_implicit_FBE(E_per, F_per, T_per)
     n_odd = ((LL + mod(LL, 2)) + 1 - m) / 2
     top = 2 * (KK2 + KK4) * (n_even + n_odd)
 
-    A1 = Banded_LU_solve(top, 2 * (KK2 + KK4) - 1, Xef(:, :top, m_idx), 6 * (KK2 + KK4) - 2, DA(stride, 1), PIVOT(:top, m_idx))
+    A1 = Banded_LU_solve(top, 2 * (KK2 + KK4) - 1, Xef(:, stride), 6 * (KK2 + KK4) - 2, DA(stride, 1), PIVOT(stride))
     Ap(stride : stride + top - 1, 1) = A1(:top, 1)
     stride = stride + 2 * (KK2 + KK4) * (LL - (max(m, 1) - 1))
-    m_idx = m_idx + 1
   end do
 
   !--- For T

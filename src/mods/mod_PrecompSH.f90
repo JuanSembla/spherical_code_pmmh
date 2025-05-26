@@ -212,10 +212,10 @@ subroutine PrecompSH()
 
     if ((solver == "convective_implicit") .or. (solver == "newton_convective_implicit") & 
         & .or. (solver == "continuation_convective_implicit")) then
-        allocate(Xef(6 * (KK2 + KK4) - 2, 2 * LL * (KK2 + KK4), 0 : MM))
-        allocate(PIVOT(2 * LL * (KK2 + KK4), 0 : MM))
+        allocate(Xef(6 * (KK2 + KK4) - 2, size_A))
+        allocate(PIVOT(size_A))
         if ((time_step == "pc") .or. (time_step == "cn")) then
-            allocate(Yef(4 * (KK2 + KK4) - 1, 2 * LL * (KK2 + KK4), 0 : MM))
+            allocate(Yef(4 * (KK2 + KK4) - 1, size_A))
         else if ((time_step == "fbe") .or. (time_step == "bdf2")) then
             allocate(Ye_mat(KK2, KK2, LL + 1), Yf_mat(KK4, KK4, LL + 1))
         end if

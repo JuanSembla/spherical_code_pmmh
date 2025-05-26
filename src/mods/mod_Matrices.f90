@@ -213,12 +213,11 @@ subroutine small2big(E, F, A)
   double precision, dimension(size_A, 1), intent(out) :: A
   integer :: step, stride
   integer :: mid
-  integer :: m, i, m_idx
+  integer :: m, i
   integer :: t_odd, t_even, l_odd, l_even, n_even, n_odd
      
   t_odd = 0
   t_even = 0
-  m_idx = 0
   step = 2 * (KK2 + KK4)
   stride = 0
   A = 0.0d0
@@ -272,12 +271,11 @@ subroutine big2small(A, E, F)
   double complex, dimension(KK4, shtns%nlm), intent(out) :: F
   integer :: step, stride
   integer :: mid
-  integer :: m, i, m_idx
+  integer :: m, i
   integer :: t_odd, t_even, l_odd, l_even, n_even, n_odd
      
   t_odd = 0
   t_even = 0
-  m_idx = 0
   step = 2 * (KK2 + KK4)
   stride = 0
   E = 0.0d0
