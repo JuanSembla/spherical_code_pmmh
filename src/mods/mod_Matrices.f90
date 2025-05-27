@@ -287,32 +287,26 @@ subroutine big2small(A, E, F)
     i = 1 - mod(max(m, 1), 2)
     mid = 2 * (KK2 * n_odd + KK4 * n_even)
     do l_odd = 1, n_odd
-        E(:, idx_odd(t_odd + l_odd))%re = &
-          & A(stride + 2 * KK4 * i + (l_odd - 1) * step + 1 : &
-          & stride + 2 * KK4 * i + (l_odd-1)*step + KK2, 1)
-        E(:, idx_odd(t_odd + l_odd))%im = & 
+        E(:, idx_odd(t_odd + l_odd)) = cmplx(A(stride + 2 * KK4 * i + (l_odd - 1) * step + 1 : &
+          & stride + 2 * KK4 * i + (l_odd-1)*step + KK2, 1), & 
           & A(stride + 2 * KK4 * i + (l_odd - 1) * step + KK2 + 1 : & 
-          & stride + 2 * KK4 * i + (l_odd - 1) * step + 2 * KK2, 1)
-        F(:, idx_odd(t_odd + l_odd))%re = & 
-          & A(stride + 2 * KK2 * i + mid + (l_odd - 1) * step + 1 : & 
-          & stride + 2 * KK2 * i + mid + (l_odd - 1) * step + KK4, 1)
-        F(:, idx_odd(t_odd + l_odd))%im = & 
+          & stride + 2 * KK4 * i + (l_odd - 1) * step + 2 * KK2, 1))
+          
+        F(:, idx_odd(t_odd + l_odd)) = cmplx(A(stride + 2 * KK2 * i + mid + (l_odd - 1) * step + 1 : & 
+          & stride + 2 * KK2 * i + mid + (l_odd - 1) * step + KK4, 1), &
           & A(stride + 2 * KK2 * i + mid + (l_odd - 1) * step + KK4 + 1 : & 
-          & stride + 2 * KK2 * i + mid + (l_odd - 1) * step + 2 * KK4, 1)
+          & stride + 2 * KK2 * i + mid + (l_odd - 1) * step + 2 * KK4, 1))
     end do
     do l_even = 1, n_even
-        F(:, idx_even(t_even + l_even))%re = & 
-          & A(stride + 2 * KK2 * (1 - i) + (l_even - 1) * step + 1 : & 
-          & stride + 2 * KK2 * (1 - i) + (l_even - 1) * step + KK4, 1)
-        F(:, idx_even(t_even + l_even))%im = & 
+        F(:, idx_even(t_even + l_even)) = cmplx(A(stride + 2 * KK2 * (1 - i) + (l_even - 1) * step + 1 : & 
+          & stride + 2 * KK2 * (1 - i) + (l_even - 1) * step + KK4, 1), &
           & A(stride + 2 * KK2 * (1 - i) + (l_even - 1) * step + KK4 + 1 : &
-          & stride + 2 * KK2 * (1 - i) + (l_even - 1) * step + 2 * KK4, 1)
-        E(:, idx_even(t_even + l_even))%re = & 
-          & A(stride + mid + 2 * KK4 * (1 - i) + (l_even - 1) * step + 1 : &
-          & stride + mid + 2 * KK4 * (1 - i) + (l_even - 1) * step + KK2, 1)
-        E(:, idx_even(t_even + l_even))%im = & 
+          & stride + 2 * KK2 * (1 - i) + (l_even - 1) * step + 2 * KK4, 1))
+          
+        E(:, idx_even(t_even + l_even)) = cmplx(A(stride + mid + 2 * KK4 * (1 - i) + (l_even - 1) * step + 1 : &
+          & stride + mid + 2 * KK4 * (1 - i) + (l_even - 1) * step + KK2, 1), &
           & A(stride + mid + 2 * KK4 * (1 - i) + (l_even - 1) * step + KK2 + 1 : &
-          & stride + mid + 2 * KK4 * (1 - i) + (l_even - 1) * step + 2 * KK2, 1)
+          & stride + mid + 2 * KK4 * (1 - i) + (l_even - 1) * step + 2 * KK2, 1))
     end do
     t_even = t_even + n_even
     t_odd = t_odd + n_odd
