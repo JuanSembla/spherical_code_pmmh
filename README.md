@@ -23,7 +23,7 @@ to create a `Makefile` for compilation. The default compiler is `gfortran` but t
 $ cmake -DCMAKE_Fortran_COMPILER=ifx ..
 ```
 
-(one can also use `ifort` instead of `ifx`). The cmake will default to use `MKL` and turn to `LAPACK` if not found. The default build is `release` but this can be changed to `debug` by doing:
+(one can also use `ifort` instead of `ifx`). The NVIDIA compiler is also available, the user should just set `-DCMAKE_Fortran_COMPILER` to `nvfortran`. The cmake will default to use `MKL` and turn to `LAPACK` if not found. The default build is `release` but this can be changed to `debug` by doing:
 
 ```sh
 $ cmake -DCMAKE_BUILD_TYPE=debug ..
@@ -34,7 +34,7 @@ Once the Makefile is created, the user should run:
 ```sh
 $ make -j
 ```
-on the terminal and the executable spectral_code_pmmh is ready to use.
+on the terminal and the executable `spectral_code_pmmh` is ready to use.
 
 # Code options
 
