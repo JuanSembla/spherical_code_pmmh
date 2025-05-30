@@ -521,14 +521,14 @@ subroutine comp_cdphi(z, U1, U2, U3, zdU1dphi, zdU2dphi, zdU3dphi)
 
   ! Compute multiplication by z and differentiation by phi
   do lm = 1, shtns%nlm
-    zdU1dphi(:, lm)%re = - z * aimag(U1(:, lm)) * dphi(lm)
-    zdU1dphi(:, lm)%im = z * real(U1(:, lm)) * dphi(lm)
+    zdU1dphi(:, lm) = cmplx(- z * aimag(U1(:, lm)) * dphi(lm), &
+                      & z * real(U1(:, lm)) * dphi(lm))
 
-    zdU2dphi(:, lm)%re = - z * aimag(U2(:, lm)) * dphi(lm)
-    zdU2dphi(:, lm)%im = z * real(U2(:, lm)) * dphi(lm)
+    zdU2dphi(:, lm) = cmplx(- z * aimag(U2(:, lm)) * dphi(lm), &
+                      & z * real(U2(:, lm)) * dphi(lm))
 
-    zdU3dphi(:, lm)%re = - z * aimag(U3(:, lm)) * dphi(lm)
-    zdU3dphi(:, lm)%im = z * real(U3(:, lm)) * dphi(lm)
+    zdU3dphi(:, lm) = cmplx(- z * aimag(U3(:, lm)) * dphi(lm), &
+                      & z * real(U3(:, lm)) * dphi(lm))
   end do
 
 end subroutine comp_cdphi
@@ -561,8 +561,8 @@ subroutine ToReal(T_spec, T_real, k_max)
 
   !#### 1. Chebyshev -> Real
   do lm = 1, shtns%nlm
-    T_inter(:kN, lm)%re = real(T_spec(:k_max, lm)) .dot. Chb(:k_max, :kN)
-    T_inter(:kN, lm)%im = aimag(T_spec(:k_max, lm)) .dot. Chb(:k_max, :kN)
+    T_inter(:kN, lm) = cmplx(real(T_spec(:k_max, lm)) .dot. Chb(:k_max, :kN), &
+                      & aimag(T_spec(:k_max, lm)) .dot. Chb(:k_max, :kN))
   end do
 
   !#### 2. SH -> Real
@@ -609,8 +609,8 @@ subroutine BackToSpectral(T_real, T_spec, k_max)
 
   ! ### 2. Real --> Chebyshev
   do lm = 1, shtns%nlm
-    T_spec(:k_max, lm)%re = real(T_inter(:kN, lm)) .dot. Chbinv(:kN, :k_max)
-    T_spec(:k_max, lm)%im = aimag(T_inter(:kN, lm)) .dot. Chbinv(:kN, :k_max)
+    T_spec(:k_max, lm) = cmplx(real(T_inter(:kN, lm)) .dot. Chbinv(:kN, :k_max), &
+                        & aimag(T_inter(:kN, lm)) .dot. Chbinv(:kN, :k_max))
   end do
 
 end subroutine BackToSpectral
