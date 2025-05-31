@@ -23,7 +23,9 @@ to create a `Makefile` for compilation. The default compiler is `gfortran` but t
 $ cmake -DCMAKE_Fortran_COMPILER=ifx ..
 ```
 
-(one can also use `ifort` instead of `ifx`). The NVIDIA compiler is also available, the user should just set `-DCMAKE_Fortran_COMPILER` to `nvfortran`. The cmake will default to use `MKL` and turn to `LAPACK` if not found. The default build is `release` but this can be changed to `debug` by doing:
+(one can also use `ifort` instead of `ifx`). The NVIDIA compiler is also available, the user should just set `-DCMAKE_Fortran_COMPILER` to `nvfortran`. The cmake will default to use `MKL` and turn to `LAPACK` if not found. The user can choose to use `LAPACK` directly by doing `-DUSE_MKL=FALSE`. If we want to work with environement modules, we should load all modules before running `cmake`.
+
+The default build is `release` but this can be changed to `debug` by doing:
 
 ```sh
 $ cmake -DCMAKE_BUILD_TYPE=debug ..
